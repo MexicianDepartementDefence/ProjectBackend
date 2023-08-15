@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Put, Delete, Patch, Body, Param, Query } from '@nestjs/common';
+import { LatihanService } from './latihan.service';
 
 @Controller('latihan') // Jika Ingin Melihat Data Yang Ditulis Maka Tulis Localhost:Kode/latihan
 export class LatihanController {
+    constructor(private latihanservice : LatihanService){}
     @Get()
     findAll(@Query() query: any){
         return {
@@ -15,12 +17,9 @@ export class LatihanController {
         console.log('sekolah: ', sekolah)
         console.log('umur: ', umur)
         console.log('alumni: ', alumni)
-        return {
-            name: name,
-            sekolah: sekolah,
-            umur: umur,
-            alumni: alumni,
-        }
+        console.log(this.latihanservice.getTransfer())
+        return this.latihanservice.getTransfer()
+        
 
         
         
@@ -37,7 +36,8 @@ return {
 
     @Patch()
     patch(){
-return 'Latihan Menggunakan Method Patch'
+console.log(this.latihanservice.HereWeGoConfimred())
+return this.latihanservice.HereWeGoConfimred()
     }
 
     @Delete('delete/:id')
