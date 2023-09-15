@@ -1,5 +1,6 @@
-import { Controller, Get, Body, Post, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Post, Param, Put, Delete, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BookService } from './book.service';
+import { CreateBookDto, UpdateBookDto, createBookArrayDto } from './book.dto';
 
 @Controller('book')
 export class BookController {
@@ -9,7 +10,7 @@ export class BookController {
         return this.bookservice.getAllBooks();
     }
 @Post('create')
-createBook(@Body() payload: any){
+createBook(@Body() payload: CreateBookDto){
     return this.bookservice.createBook(payload)
 }
 
@@ -19,13 +20,18 @@ findOneBook(@Param('id') id: string) {
 }
 
 @Put('update/:id')
-updateBook(@Param('id') id: string, @Body() payload:any){
+updateBook(@Param('id') id: string, @Body() payload:UpdateBookDto){
     return this.bookservice.updateBook(Number(id), payload);
 }
 
 @Delete('delete/:id')
 deleteBook(@Param('id') id: string){
-return this.bookservice.deleteBook(+id);
+return this.bookservice.HapusBuku(+id);
+}
+
+@Post("create/bulk")
+createbulk(payload : createBookArrayDto) {
+    return this.bookservice.bulkCreate(payload);
 }
 }
 
