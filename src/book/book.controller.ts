@@ -1,14 +1,14 @@
 import { Controller, Get, Body, Post, Param, Put, Delete, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BookService } from './book.service';
-import { CreateBookDto, UpdateBookDto, createBookArrayDto } from './book.dto';
+import { CreateBookDto, FindBookDto, UpdateBookDto, createBookArrayDto } from './book.dto';
 import { Pagination } from 'src/utils/decorator/pagination.decorator';
 
 @Controller('book')
 export class BookController {
     constructor(private bookservice: BookService) {}
-    @Get('list')
-    getAllBook(@Pagination() findbookdto : findbookDto) {
-        return this.bookservice.getAllBooks();
+    @Get('/list')
+    getAllBook(@Pagination() payload : FindBookDto) {
+        return this.bookservice.getAllBooks(payload);
     }
 @Post('create')
 createBook(@Body() payload: CreateBookDto){

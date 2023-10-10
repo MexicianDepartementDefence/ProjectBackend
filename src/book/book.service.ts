@@ -1,17 +1,20 @@
 import { Injectable, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
-import { ResponseSuccess } from 'src/user/interface/respone';
-import { CreateBookDto, UpdateBookDto, createBookArrayDto } from './book.dto';
+import { ResponseSuccess, ResponsePagination } from 'src/user/interface/respone';
+import { CreateBookDto, FindBookDto, UpdateBookDto, createBookArrayDto } from './book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './book.entity';
-import { Not, Repository } from 'typeorm';
+import { Between, Like, Not, Repository } from 'typeorm';
+import BaseResponse from 'src/utils/Response/base.response';
 
 
 @Injectable()
-export class BookService {
+export class BookService extends BaseResponse {
     constructor (
         @InjectRepository(Book) private readonly bookRepository : Repository<Book>
-    ) {}
-    private books: {
+    ) {
+        super();
+    }
+   /* private books: {
         id?: number;
         title: string;
         author: string;
@@ -32,6 +35,41 @@ export class BookService {
         year: number;
     }[] {
         return this.books;
+    }*/
+
+    async getAllBooks(query: FindBookDto) : Promise<ResponsePagination> {
+        console.log('uqwey', query)
+        const {page, pageSize, limit, title, author, from_year, to_year} = query;
+        const total = await this.bookRepository.count();
+
+        const filter: {
+            [key: string] :any;
+        } = {};
+
+        if (title) {
+filter.title = Like(`%${title}%`)
+        }
+if (author) {
+    filter.author = Like(`%${author}%`)
+}
+
+if (from_year && to_year) {
+    filter.year = Between(from_year, to_year)
+}
+
+if (from_year && !!to_year === false) {
+    filter.year = Between(from_year, to_year)
+}
+
+        const result = await this.bookRepository.find({
+            where: filter,
+            skip: limit,
+            take: pageSize
+        })
+
+       
+
+        return this._pagination('Sip', result,  total, page, pageSize)
     }
 
     async createBook(payload : CreateBookDto) : Promise<ResponseSuccess> {
@@ -42,10 +80,7 @@ export class BookService {
                 author : author,
                 year: year
             });
-            return {
-                status : "Success",
-                message : "Berhasil Menambahkan Buku"
-            }
+            return this._success('Sip', SimpanBuku);
         } catch (err) {
 throw new HttpException("Ada Kesalahan", HttpStatus.BAD_REQUEST)
         }
