@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Rider } from './rider.entity';
 import { buatArrayDtoRider, buatDtoRider, updateDtoRider } from './rider.dto';
-import { ResponseSuccess } from 'src/user/interface/respone';
+import { ResponseSuccess } from 'src/interface/respone';
 import BaseResponse from 'src/utils/Response/base.response';
 
 @Injectable()

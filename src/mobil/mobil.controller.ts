@@ -1,8 +1,7 @@
 import { Controller, Body, Delete, Get, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateMobilDto, UpdateMobilDto, createMobilArrayDto } from './mobil.dto';
-import { ResponseSuccess } from 'src/user/interface/respone';
+
 import { MobilService } from './mobil.service';
-import { createUserArrayDto } from 'src/user/user.dto';
 
 @Controller('mobil')
 export class MobilController {

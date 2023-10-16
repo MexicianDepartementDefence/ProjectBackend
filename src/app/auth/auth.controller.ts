@@ -7,6 +7,12 @@ export class AuthController {
     constructor(private authService: AuthService) {}
 
     @Post ("Register")
+    async register(@Body() payload: DtoRegister) {
+        return this.authService.register(payload)
+    }
 
     @Post("Login")
+    async login() {
+        
+    }
 }

@@ -1,4 +1,4 @@
-import { ResponsePagination, ResponseSuccess } from "src/user/interface/respone";
+import { ResponsePagination, ResponseSuccess } from "src/interface/respone";
 
 class BaseResponse {
     _success (message: string, data? : any) : ResponseSuccess {

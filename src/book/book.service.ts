@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
-import { ResponseSuccess, ResponsePagination } from 'src/user/interface/respone';
+import { ResponseSuccess, ResponsePagination } from 'src/interface/respone';
 import { CreateBookDto, FindBookDto, UpdateBookDto, createBookArrayDto } from './book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './book.entity';

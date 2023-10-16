@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Mobil } from './mobil.entity';
 import { Repository } from 'typeorm';
 import { CreateMobilDto, UpdateMobilDto, createMobilArrayDto } from './mobil.dto';
-import { ResponseSuccess } from 'src/user/interface/respone';
+import { ResponseSuccess } from 'src/interface/respone';
 
 @Injectable()
 export class MobilService {
