@@ -53,11 +53,7 @@ constructor(
         tanggal_lahir: tanggal_lahir,
         status: status   
     });
-    return {
-        status: "Success",
-        message: "Berhasil Menambahkan User",
-        data : SimpanUser
-    };
+    return this._success("Sip", SimpanUser)
  } catch (err) {
     throw new HttpException("Ada Kesalahan", HttpStatus.BAD_REQUEST);
  }
