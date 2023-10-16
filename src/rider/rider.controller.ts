@@ -19,4 +19,10 @@ export class RiderController {
     BikinDetailRider (@Body() payload : buatDtoRider) {
         return this.rider.buatDataRider(payload)
     }
+
+    @Delete('/delete/bulk') 
+    HapusBanyakRider (@Body() id : number[])
+    {
+return this.rider.deleteBulk(id)
+    }
  }
