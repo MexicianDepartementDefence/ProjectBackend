@@ -4,12 +4,13 @@ import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
+import BaseResponse from 'src/utils/Response/base.response';
 
 @Injectable()
-export class UserService {
+export class UserService extends BaseResponse {
 constructor(
     @InjectRepository(User) private readonly userRepository : Repository<User>
-) {}
+) {super()}
  
     private users: {
         id?: number,
@@ -30,7 +31,7 @@ constructor(
             }
         ];
 
-    getAllUsers(): {
+    /*getAllUsers(): {
         id?: number;
         nama: string;
         email: string;
@@ -40,7 +41,7 @@ constructor(
 
     }[] {
         return this.users;
-    }
+    }*/
 
     async createUsers(payload: CreateUserDto): Promise<ResponseSuccess> {
         const { nama, email, umur, tanggal_lahir, status } = payload;
@@ -125,12 +126,38 @@ this.users[UserIndex].status = status;
 
 async getAllUser() : Promise<ResponseSuccess> {
     const hasil = await this.userRepository.find();
-    return {
-        status : "Sukses",
-        message : "List Buku Ditemukan",
-        data: hasil
-    }
+    return this._success("Sip", hasil)
 }
+
+async deleteUser(id : number) : Promise<ResponseSuccess> {
+    const hasil = await this.userRepository.findOne(
+        {where: {id}}
+    );
+
+    await this.userRepository.delete(id);
+
+    if(!hasil) throw new HttpException("Ada Kesalahan User", HttpStatus.BAD_REQUEST)
+
+    return this._success("Sip")
+}
+
+async Updateuser (id: number, payload : UpdateUserDto) : Promise<ResponseSuccess> {
+    const hasil = await this.userRepository.findOne({where: {id}})
+
+    const update = await this.userRepository.save({...payload, id: id})
+
+    if(!hasil) throw new NotFoundException(`Ada Kesalahan, Tidak Dapat Id ${id}`)
+
+    return this._success("Sip", update)
+}
+
+async getOneUser (id :number) : Promise<ResponseSuccess> {
+    const hasil = await this.userRepository.findOne({where: {id}})
+    if (hasil === null) throw new NotFoundException(`Ada Kesalahan, Tidak Dapat Id ${id}`)
+
+    return this._success("Sip", hasil)
+}
+
 
 
 }

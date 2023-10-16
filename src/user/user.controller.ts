@@ -8,25 +8,25 @@ export class UserController {
     constructor(private userserivce : UserService){}
     @Get('list')
     getAllUsers(){
-        return this.userserivce.getAllUsers();
+        return this.userserivce.getAllUser()
     }
-   /* @Put("update/:id")
+    @Put("update/:id")
     updateUsers(@Param('id') id: string, @Body() payload: UpdateUserDto){
-return this.userserivce.updateUsers(Number(id), payload);
-    }*/
+return this.userserivce.Updateuser(Number(id), payload);
+    }
 @Post('create')
 createUsers(@Body() payload: CreateUserDto){
     return this.userserivce.createUsers(payload)
 }
-/* @Delete('delete/:id')
+ @Delete('delete/:id')
 deleteUsers(@Param('id') id: string){
-    return this.userserivce.deleteUsers(+id);
+    return this.userserivce.deleteUser(Number(id))
 }
 
 @Get('detail/:id')
 findOneBook(@Param('id') id: string){
-    return this.userserivce.getDetail(+id);
-}*/
+    return this.userserivce.getOneUser(Number(id))
+}
 }
 
 const array = [
