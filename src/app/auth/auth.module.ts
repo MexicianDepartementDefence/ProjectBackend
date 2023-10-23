@@ -6,6 +6,9 @@ import { User } from "./auth.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { jwt_config } from "src/config/jwt.config";
+import { JwtAccessTokenStrategy } from "./jwtAccessToken.strategy";
+import { JwtRefreshTokenStrategy } from "./jwtRefreshToken.strategy";
+
 
 @Module({
   imports: [
@@ -13,6 +16,6 @@ import { jwt_config } from "src/config/jwt.config";
     JwtModule.register({})
 ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtAccessTokenStrategy, JwtRefreshTokenStrategy],
 })
 export class AuthModule {}
