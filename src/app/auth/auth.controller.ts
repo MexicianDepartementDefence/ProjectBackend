@@ -1,5 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { DtoRegister } from './auth.dto';
+import { DtoRegister, DtonyaLogin } from './auth.dto';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -12,7 +12,7 @@ export class AuthController {
     }
 
     @Post("Login")
-    async login() {
-        
+    async login(@Body() payload: DtonyaLogin) {
+        return this.authService.Login(payload)
     }
 }
