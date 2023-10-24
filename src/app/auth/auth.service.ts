@@ -19,12 +19,12 @@ export class AuthService extends BaseResponse {
         super()
     }
 
-    generateJWT(payload: jwtPayload, expiresIn : string | number, token : string) {
+    private generateJWT(payload: jwtPayload, expiresIn: string | number, secret_key: string) {
         return this.jwtService.sign(
             payload, {
-                secret: token,
-                expiresIn : expiresIn
-            }
+            secret: secret_key,
+            expiresIn: expiresIn
+        }
         )
     }
 
@@ -41,8 +41,8 @@ export class AuthService extends BaseResponse {
     }
 
     async Login(payload: DtonyaLogin): Promise<ResponseSuccess> {
-        const apakahEmailada = await this.authRepository.findOne({ 
-            where: { email: payload.email }, 
+        const apakahEmailada = await this.authRepository.findOne({
+            where: { email: payload.email },
             select: {
                 id: true,
                 nama: true,
@@ -51,7 +51,7 @@ export class AuthService extends BaseResponse {
                 refresh_token: true
             }
 
-            
+
         })
 
         if (!apakahEmailada) {
@@ -63,17 +63,17 @@ export class AuthService extends BaseResponse {
         const cekKatasandi = await compare(
             payload.password,
             apakahEmailada.password
-            
+
         );
 
         if (cekKatasandi) {
-            const jwtPayload: jwtPayload =  {
-id : apakahEmailada.id,
-nama : apakahEmailada.nama,
-email : apakahEmailada.email
+            const jwtPayload: jwtPayload = {
+                id: apakahEmailada.id,
+                nama: apakahEmailada.nama,
+                email: apakahEmailada.email
             }
 
-            const access_token = await this.generateJWT (
+            const access_token = await this.generateJWT(
                 jwtPayload,
                 '1d',
                 jwt_config.access_token_secret
@@ -86,8 +86,8 @@ email : apakahEmailada.email
             )
 
             await this.authRepository.save({
-                refresh_token : refresh_token,
-                id : apakahEmailada.id
+                refresh_token: refresh_token,
+                id: apakahEmailada.id
             })
             return this._success('Login Sukses', {
                 ...apakahEmailada,
@@ -102,21 +102,23 @@ email : apakahEmailada.email
         }
     }
 
-    async ProfilKu (id: number) : Promise<ResponseSuccess> {
-        const user = await this.authRepository.findOne ({where: {
-            id: id
-        }})
+    async ProfilKu(id: number): Promise<ResponseSuccess> {
+        const user = await this.authRepository.findOne({
+            where: {
+                id: id
+            }
+        })
 
         return this._success('OK', user);
     }
 
-    async RefreshToken (id : number, token : string) : Promise<ResponseSuccess> {
+    async RefreshToken(id: number, token: string): Promise<ResponseSuccess> {
         const apakahUserAda = await this.authRepository.findOne({
             where: {
                 id: id,
                 refresh_token: token
             },
-            select : {
+            select: {
                 id: true,
                 nama: true,
                 email: true,
@@ -130,7 +132,7 @@ email : apakahEmailada.email
             throw new UnauthorizedException()
         }
 
-        const jwtPayload : jwtPayload = {
+        const jwtPayload: jwtPayload = {
             id: apakahUserAda.id,
             nama: apakahUserAda.nama,
             email: apakahUserAda.email
@@ -153,6 +155,6 @@ email : apakahEmailada.email
             id: apakahUserAda.id
         })
 
-        return this._success('Success' , {...apakahUserAda, access_token: access_token, refresh_token: refresh_token})
+        return this._success('Success', { ...apakahUserAda, access_token: access_token, refresh_token: refresh_token })
     }
 }
