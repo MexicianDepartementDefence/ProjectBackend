@@ -10,8 +10,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       host: 'sandbox.smtp.mailtrap.io', //sesuaikan konfigurasi 
       port: 2525,
       auth: {
-        user: '116b44e4fce785',  //sesuaikan user
-        pass: '0a66404e26**', //sesuaikan password 
+        user: "2fdfc79a8bae9a",
+    pass: "********7a67"
       },
     },
     defaults: {

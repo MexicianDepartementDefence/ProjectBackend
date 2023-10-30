@@ -117,51 +117,56 @@ export class AuthService extends BaseResponse {
         return this._success('OK', user);
     }
 
-    async RefreshToken(id: number, token: string): Promise<ResponseSuccess> {
-        const apakahUserAda = await this.authRepository.findOne({
-            where: {
-                id: id,
-                refresh_token: token
-            },
-            select: {
-                id: true,
-                nama: true,
-                email: true,
-                password: true,
-                refresh_token: true
-            }
-        })
-
-        console.log('user', apakahUserAda)
-        if (apakahUserAda == null) {
-            throw new UnauthorizedException()
+    async refreshToken(id: number, token: string): Promise<ResponseSuccess> {
+        const checkUserExists = await this.authRepository.findOne({
+          where: {
+            id: id,
+            refresh_token: token,
+          },
+          select: {
+            id: true,
+            nama: true,
+            email: true,
+            password: true,
+            refresh_token: true,
+          },
+        });
+    
+        console.log('user', checkUserExists);
+        if (checkUserExists === null) {
+          throw new UnauthorizedException();
         }
-
+    
         const jwtPayload: jwtPayload = {
-            id: apakahUserAda.id,
-            nama: apakahUserAda.nama,
-            email: apakahUserAda.email
-        }
-
+          id: checkUserExists.id,
+          nama: checkUserExists.nama,
+          email: checkUserExists.email,
+        };
+    
         const access_token = await this.generateJWT(
-            jwtPayload,
-            '1d',
-            jwt_config.access_token_secret
-        )
-
+          jwtPayload,
+          '1d',
+          jwt_config.access_token_secret,
+        );
+    
         const refresh_token = await this.generateJWT(
-            jwtPayload,
-            '7d',
-            jwt_config.refresh_token_secret
-        )
-
+          jwtPayload,
+          '7d',
+          jwt_config.refresh_token_secret,
+        );
+    
         await this.authRepository.save({
-            refresh_token: refresh_token,
-            id: apakahUserAda.id
-        })
-
-        return this._success('Success', { ...apakahUserAda, access_token: access_token, refresh_token: refresh_token })
-    }
+          refresh_token: refresh_token,
+          id: checkUserExists.id,
+        });
+    
+        return this._success('Success', {
+          ...checkUserExists,
+          access_token: access_token,
+          refresh_token: refresh_token,
+        });
+      }
+    
 
     async lupaKataSandi(email : string) : Promise<ResponseSuccess> {
         const pengguna = await this.authRepository.findOne({where: {

@@ -25,12 +25,12 @@ export class AuthController {
     }
 
     @UseGuards(JwtGuardRefreshToken)
-    @Get('refresh-token')
-    async refreshToken(@Req() req) {
-        const token = req.headers.authorization.split('')[1];
-        const id = req.headers.id;
-        return this.authService.RefreshToken(+id, token);
-    }
+  @Get('refresh-token')
+  async refreshToken(@Req() req) {
+    const token = req.headers.authorization.split(' ')[1];
+    const id = req.headers.id;
+    return this.authService.refreshToken(+id, token);
+  }
 
     @Post('lupa-password')
     async lupaPassword (@Body('email') email: string) {
