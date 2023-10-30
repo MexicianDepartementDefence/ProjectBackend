@@ -6,7 +6,7 @@ import { User } from "./auth.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { JwtAccessTokenStrategy } from "./jwtAccessToken.strategy";
-import { JwtRefreshTokenStrategy } from "./jwtRefreshToken.strategy";
+import { JwtRefreshTokenStrategy } from "./jwtRefreshTokenStrategy";
 import { MailModule } from "../mail/mail.module";
 import { ResetPassword } from "./reste_password.entity";
 
