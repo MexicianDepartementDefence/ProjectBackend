@@ -28,7 +28,13 @@ export class AuthController {
     @Get('refresh-token')
     async refreshToken(@Req() req) {
         const token = req.headers.authorization.split('')[1];
-        const id = req.headers.id
+        const id = req.headers.id;
         return this.authService.RefreshToken(+id, token);
+    }
+
+    @Post('lupa-password')
+    async lupaPassword (@Body('email') email: string) {
+        console.log('email', email);
+        return this.authService.lupaKataSandi(email);
     }
 }

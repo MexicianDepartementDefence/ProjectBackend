@@ -8,17 +8,18 @@ import { PassportModule } from "@nestjs/passport";
 import { JwtAccessTokenStrategy } from "./jwtAccessToken.strategy";
 import { JwtRefreshTokenStrategy } from "./jwtRefreshToken.strategy";
 import { MailModule } from "../mail/mail.module";
+import { ResetPassword } from "./reste_password.entity";
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
-    JwtModule.register({
-      global: true,
-      signOptions : {
-        algorithm: 'HS512'
-      }
+    TypeOrmModule.forFeature([User, ResetPassword]),
+    PassportModule.register({
+      defaultStrategy: 'jwt',
+      property: 'user',
+      session: false,
     }),
+    JwtModule.register({}),
     MailModule
 ],
   controllers: [AuthController],

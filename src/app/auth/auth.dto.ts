@@ -27,3 +27,8 @@ export class UserDto {
 
 export class DtoRegister extends PickType(UserDto, ["nama", "email", "password"]) {}
 export class DtonyaLogin extends PickType(UserDto, ['email', 'password']) {}
+export class ResetPasswordDto {
+    @IsString()
+    @MinLength(8)
+    password_baru : string;
+}

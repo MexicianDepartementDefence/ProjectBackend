@@ -2,19 +2,24 @@ import { Injectable, HttpStatus, HttpException, UnauthorizedException } from '@n
 import { InjectRepository } from '@nestjs/typeorm';
 import BaseResponse from 'src/utils/Response/base.response';
 import { Repository } from 'typeorm';
-import { DtoRegister, DtonyaLogin } from './auth.dto';
+import { DtoRegister, DtonyaLogin, ResetPasswordDto } from './auth.dto';
 import { compare, hash } from 'bcrypt';
 import { ResponseSuccess } from 'src/interface/respone';
 import { User } from './auth.entity';
 import { jwt_config } from 'src/config/jwt.config';
 import { JwtService } from '@nestjs/jwt';
+import { ResetPassword } from './reste_password.entity';
+import { MailService } from '../mail/mail.service';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 
 export class AuthService extends BaseResponse {
     constructor(
         @InjectRepository(User) private readonly authRepository: Repository<User>,
+        @InjectRepository(ResetPassword) private readonly resetKataSandi : Repository<ResetPassword>,
         private jwtService: JwtService,
+        private mailService : MailService
     ) {
         super()
     }
@@ -157,4 +162,68 @@ export class AuthService extends BaseResponse {
 
         return this._success('Success', { ...apakahUserAda, access_token: access_token, refresh_token: refresh_token })
     }
-}
+
+    async lupaKataSandi(email : string) : Promise<ResponseSuccess> {
+        const pengguna = await this.authRepository.findOne({where: {
+            email: email
+        }})
+
+        if (!pengguna) {
+throw new HttpException('Maaf, Email Tidak Ditemukan', HttpStatus.UNPROCESSABLE_ENTITY)
+        }
+
+        const token = randomBytes(32).toString('hex');
+        const link = `http://localhost:8080/auth/reset-password/${pengguna.id}/${token}`
+        await this.mailService.kirimLupaSandi({
+            email: email,
+            name: pengguna.nama,
+            link: link
+        })
+
+        const payload = {
+            user: {
+                id : pengguna.id
+            },
+            token: token
+        }
+
+        return this._success("Sukses Mereset Password")
+    }
+
+    async resetPassword (
+        user_id : number,
+        token : string,
+        payload: ResetPasswordDto
+
+    ) : Promise<ResponseSuccess> {
+
+        const Token = await this.resetKataSandi.findOne(
+            {where: {
+                token: token,
+                user: {
+                    id : user_id
+                }
+            }},
+
+            
+        )
+        if (!Token) {
+            throw new HttpException("Token Tidak Valid", HttpStatus.UNPROCESSABLE_ENTITY)
+        }
+
+        payload.password_baru = await hash(payload.password_baru, 12)
+
+        await this.authRepository.save({
+            password : payload.password_baru,
+            id :user_id
+        })
+
+        await this.resetKataSandi.delete ({
+            user : {
+                id : user_id
+            }
+        })
+
+        return this._success('Reset Password Berhasil, Silahkan Login Ulang')
+        }
+    }
