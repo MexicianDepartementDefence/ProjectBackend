@@ -9,10 +9,9 @@ import { AuthController } from './app/auth/auth.controller';
 import { AuthService } from './app/auth/auth.service';
 import { AuthModule } from './app/auth/auth.module';
 import { MailModule } from './app/mail/mail.module';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig), ConfigModule.forRoot({ isGlobal: true }), LatihanModule, BookModule, AuthModule, MailModule],
+  imports: [TypeOrmModule.forRoot(typeOrmConfig), LatihanModule, BookModule, AuthModule, MailModule],
   controllers: [AppController],
   providers: [AppService],
 })

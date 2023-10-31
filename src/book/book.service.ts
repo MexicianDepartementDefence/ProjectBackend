@@ -192,11 +192,7 @@ return {
 }
 
 async bulkCreate (payload: createBookArrayDto) : Promise<ResponseSuccess> {
-    return {
-        status : "ok",
-        message : "Data Berhasil Masuk"
-    }
-    /*try {
+    try {
         let berhasil = 0;
         let gagal = 0
         await Promise.all(
@@ -213,10 +209,10 @@ gagal += 1;
             )
         )
 
-        return this.
+        return this._success("Sip", payload)
     } catch {
-
-    }*/
+throw new HttpException("Terjadi Kesalahan", HttpStatus.BAD_REQUEST)
+    }
 }
 
 }

@@ -32,9 +32,9 @@ export class AuthController {
     return this.authService.refreshToken(+id, token);
   }
 
-    @Post('lupa-password')
-    async lupaPassword (@Body('email') email: string) {
-        console.log('email', email);
-        return this.authService.lupaKataSandi(email);
-    }
+  @Post('lupa-password')
+  async forgotPassowrd(@Body('email') email: string) {
+    console.log('email', email);
+    return this.authService.lupaKataSandi(email);
+  }
 }
