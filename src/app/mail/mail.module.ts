@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MailService } from './mail.service';
+import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { join } from 'path'; 
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter'
+import {HandlebarsAdapter} from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter'
 
 @Module({
   imports: [   MailerModule.forRoot({
@@ -11,7 +11,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       port: 2525,
       auth: {
         user: "2fdfc79a8bae9a",
-    pass: "********7a67"
+    pass: "6f65c295857a67"
       },
     },
     defaults: {
@@ -29,4 +29,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
   providers: [MailService],
   exports: [MailService]
 })
+
+
 export class MailModule {}
+
+

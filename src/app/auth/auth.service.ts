@@ -169,25 +169,25 @@ export class AuthService extends BaseResponse {
     
 
     async lupaKataSandi(email : string) : Promise<ResponseSuccess> {
-        const pengguna = await this.authRepository.findOne({where: {
+        const user= await this.authRepository.findOne({where: {
             email: email
         }})
 
-        if (!pengguna) {
+        if (!user) {
 throw new HttpException('Maaf, Email Tidak Ditemukan', HttpStatus.UNPROCESSABLE_ENTITY)
         }
 
         const token = randomBytes(32).toString('hex');
-        const link = `http://localhost:8080/auth/reset-password/${pengguna.id}/${token}`
+        const link = `http://localhost:8080/auth/reset-password/${user.id}/${token}`
         await this.mailService.kirimLupaSandi({
             email: email,
-            name: pengguna.nama,
+            name: user.nama,
             link: link
         })
 
         const payload = {
             user: {
-                id : pengguna.id
+                id : user.id
             },
             token: token
         }

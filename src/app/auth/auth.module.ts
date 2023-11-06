@@ -9,6 +9,7 @@ import { JwtAccessTokenStrategy } from "./jwtAccessToken.strategy";
 import { JwtRefreshTokenStrategy } from "./jwtRefreshTokenStrategy";
 import { MailModule } from "../mail/mail.module";
 import { ResetPassword } from "./reste_password.entity";
+import { jwt_config } from "src/config/jwt.config";
 
 
 @Module({
@@ -19,7 +20,12 @@ import { ResetPassword } from "./reste_password.entity";
       property: 'user',
       session: false,
     }),
-    JwtModule.register({}),
+    JwtModule.register({
+      secret: jwt_config.access_token_secret,
+      signOptions: {
+        expiresIn: jwt_config.expired
+      }
+    }),
     MailModule
 ],
   controllers: [AuthController],
