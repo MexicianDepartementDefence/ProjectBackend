@@ -1,6 +1,6 @@
 import { Controller, Get, Body, Post, Param, Put, Delete, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BookService } from './book.service';
-import { CreateBookDto, FindBookDto, UpdateBookDto, createBookArrayDto } from './book.dto';
+import { CreateBookDto, FindBookDto, UpdateBookDto, createBookArrayDto, deleteBookArrayDto } from './book.dto';
 import { Pagination } from 'src/utils/decorator/pagination.decorator';
 
 @Controller('book')
@@ -34,6 +34,12 @@ return this.bookservice.HapusBuku(+id);
 createbulk(payload : createBookArrayDto) {
     return this.bookservice.bulkCreate(payload);
 }
+
+@Post("delete/bulk")
+deleteBulk(payload : deleteBookArrayDto) {
+    return this.bookservice.bulkDelete(payload)
+}
+
 }
 
 const array = [

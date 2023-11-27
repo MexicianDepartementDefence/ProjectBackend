@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
 import { ResponseSuccess, ResponsePagination } from 'src/interface/respone';
-import { CreateBookDto, FindBookDto, UpdateBookDto, createBookArrayDto } from './book.dto';
+import { CreateBookDto, FindBookDto, UpdateBookDto, createBookArrayDto, deleteBookArrayDto } from './book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './book.entity';
 import { Between, Like, Not, Repository } from 'typeorm';
@@ -215,4 +215,29 @@ throw new HttpException("Terjadi Kesalahan", HttpStatus.BAD_REQUEST)
     }
 }
 
+
+async bulkDelete (payload: deleteBookArrayDto) : Promise<ResponseSuccess> {
+try {
+    let berhasil = 0;
+    let gagal = 0
+    await Promise.all (
+        payload.data.map(
+            async (data) => {
+                try {
+await this.bookRepository.delete(data)
+berhasil = berhasil + 1
+                }
+                catch {
+gagal = gagal + 1
+                }
+            }
+        )
+    )
+
+    return this._success(`Berhasil Menghapus Buku Sebanyak ${berhasil} Kali Dan Gagal Sebanyak ${gagal} Kali`)
+}
+catch {
+    throw new HttpException("Terjadi Kesalahan", HttpStatus.BAD_REQUEST)
+}
+}
 }

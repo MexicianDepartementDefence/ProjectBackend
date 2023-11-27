@@ -40,3 +40,8 @@ export class createBookArrayDto {
     @Type(() => CreateBookDto)
     data: CreateBookDto[];
   }
+
+  export class deleteBookArrayDto {
+    @IsArray()
+    data : number[]
+  }
