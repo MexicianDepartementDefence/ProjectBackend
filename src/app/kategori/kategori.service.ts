@@ -176,4 +176,6 @@ export class KategoriService extends BaseResponse {
 
         return this._success("Sukses", user)
     }
+
+    async getBulk ()
 }
