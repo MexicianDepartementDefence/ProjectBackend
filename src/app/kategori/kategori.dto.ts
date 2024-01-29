@@ -26,5 +26,9 @@ export class FindAllKategori extends PageRequestDto {
     @IsOptional()
     nama_kategori: string;
 
+    @IsString()
+    @IsOptional()
+    nama_user: string;
+
     
 }

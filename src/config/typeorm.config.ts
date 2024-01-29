@@ -8,5 +8,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   database: "nestjs2",
   entities: ["dist/**/*.entity{.ts,.js}"],
   synchronize: true,
-  logging: true
+  // logging: true
 };

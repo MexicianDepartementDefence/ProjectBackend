@@ -6,10 +6,12 @@ import BaseResponse from 'src/utils/Response/base.response';
 import { REQUEST } from '@nestjs/core';
 import { CreateKategoriDto, FindAllKategori, UpdateKategoriDto } from './kategori.dto';
 import { ResponseSuccess, ResponsePagination } from 'src/interface/respone';
+import { User } from '../auth/auth.entity';
 @Injectable()
 export class KategoriService extends BaseResponse {
     constructor(
         @InjectRepository(Kategori) private readonly kategoriRepository: Repository<Kategori>,
+        @InjectRepository(User) private readonly UserRepository: Repository<User>,
         @Inject(REQUEST) private req: any,
 
     ) {
@@ -18,30 +20,30 @@ export class KategoriService extends BaseResponse {
 
     async create(payload: CreateKategoriDto): Promise<ResponseSuccess> {
         try {
-          await this.kategoriRepository.save(payload);
-    
-          return this._success('OK', this.req.user.user_id);
-        } catch {
-          throw new HttpException('Ada Kesalahan', HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-      }
+            await this.kategoriRepository.save(payload);
 
-      async Detail (id: number) : Promise<ResponseSuccess> {
+            return this._success('OK', this.req.user.user_id);
+        } catch {
+            throw new HttpException('Ada Kesalahan', HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    async Detail(id: number): Promise<ResponseSuccess> {
         const cari = await this.kategoriRepository.findOne({
             where: {
                 id: id,
             },
             select: {
-id: true,
-nama_kategori: true,
-created_by: {
-    id: true,
-    nama: true,
-    email: true
-}
+                id: true,
+                nama_kategori: true,
+                created_by: {
+                    id: true,
+                    nama: true,
+                    email: true
+                }
             },
             relations: ["created_by", "updated_by"]
-            
+
         });
 
         if (!cari) {
@@ -49,9 +51,9 @@ created_by: {
         }
 
         return this._success("Berhasil Menemukan Detail", cari)
-      }
+    }
 
-      async Update (id: number, payload: UpdateKategoriDto) : Promise<ResponseSuccess> {
+    async Update(id: number, payload: UpdateKategoriDto): Promise<ResponseSuccess> {
         const cari = await this.kategoriRepository.findOne({
             where: {
                 id: id
@@ -68,24 +70,33 @@ created_by: {
         });
 
         return this._success("Berhasil Mengupdate Data", update)
-      }
+    }
 
-      async delete (id: number) : Promise<ResponseSuccess> {
-        
-        return this._success("Ok")
-      }
+    async delete(id: number): Promise<ResponseSuccess> {
+        const cek = await this.kategoriRepository.findOne(
+            { where: { id: id } }
+        )
+
+        if (!cek) {
+            throw new HttpException("Terjadi Kesalahan", HttpStatus.BAD_REQUEST)
+        }
+
+        const hapus = await this.kategoriRepository.delete(id);
+
+        return this._success("Berhasil Menghapus Data", hapus)
+    }
 
 
-//     async create (payload: CreateKategoriDto) : Promise<ResponseSuccess> {
-//         try {
-// await this.kategoriRepository.save(payload);
+    //     async create (payload: CreateKategoriDto) : Promise<ResponseSuccess> {
+    //         try {
+    // await this.kategoriRepository.save(payload);
 
-// return this._success("OK", this.req.user.user_id)
-//         }
-//         catch {
+    // return this._success("OK", this.req.user.user_id)
+    //         }
+    //         catch {
 
-//         }
-//     }
+    //         }
+    //     }
 
     // async create(payload: CreateKategoriDto): Promise<ResponseSuccess> {
     //     console.log("request", this.req.user)
@@ -104,16 +115,24 @@ created_by: {
     // }
 
     async getAllCategory(query: FindAllKategori): Promise<ResponsePagination> {
-        const { page, pageSize, limit, nama_kategori } = query;
+        const { page, pageSize, limit, nama_kategori, nama_user } = query;
+
 
         const filterQuery: any = {}
         if (nama_kategori) {
             filterQuery.nama_kategori = Like(`%${nama_kategori}%`);
         }
+        if (nama_user) {
+            filterQuery.created_by = {
+                nama: Like(`%${nama_user}%`),
+            }
+        }
 
         const total = await this.kategoriRepository.count(
             { where: filterQuery }
         );
+
+        console.log("Qwery", filterQuery);
 
         const result = await this.kategoriRepository.find({
             where: filterQuery,
@@ -137,5 +156,24 @@ created_by: {
         })
 
         return this._pagination("Sip", result, total, page, pageSize)
+    }
+
+    async getUserCategory(): Promise<ResponseSuccess> {
+        const user = await this.UserRepository.findOne({
+            where: { id: this.req.user.id },
+            relations: ['kategori_created_by', 'kategori_updated_by'],
+            select: {
+                id: true,
+                nama: true,
+                kategori_created_by: {
+                    id: true,
+                    nama_kategori: true
+                }
+            }
+        },
+
+        )
+
+        return this._success("Sukses", user)
     }
 }

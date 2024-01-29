@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { KategoriService } from './kategori.service';
 import { CreateKategoriDto, FindAllKategori, UpdateKategoriDto } from './kategori.dto';
 import { Pagination } from 'src/utils/decorator/pagination.decorator';
@@ -30,4 +30,16 @@ export class KategoriController {
     async Update(@Param('id') id: string, @InjectUpdatedBy() payload: UpdateKategoriDto){
 return this.KategoriService.Update(Number(id), payload)
     }
+
+    @Delete('delete/:id')
+    async Hapus(@Param('id') id: string)
+    {
+      return this.KategoriService.delete(+id)
+    }
+
+    @Get('user/list')
+    async getUserCategory () {
+      return this.KategoriService.getUserCategory();
+    }
+    
 }
