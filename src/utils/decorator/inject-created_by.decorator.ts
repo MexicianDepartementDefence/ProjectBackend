@@ -6,7 +6,7 @@ export const InjectCreatedBy = createParamDecorator(
 
     // req.body.created_by = { id: req.user.id };
 
-    req.body.created_by = req.user.id;
+    req.body.created_by = {id: req.user.id};
 
     return req.body;
   },

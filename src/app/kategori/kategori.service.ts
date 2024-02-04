@@ -4,7 +4,7 @@ import { Kategori } from './kategori.entity';
 import { Like, Repository } from 'typeorm';
 import BaseResponse from 'src/utils/Response/base.response';
 import { REQUEST } from '@nestjs/core';
-import { CreateKategoriDto, FindAllKategori, UpdateKategoriDto } from './kategori.dto';
+import { CreateKategoriDto, FindAllKategori, UpdateKategoriDto, buatArrayDto } from './kategori.dto';
 import { ResponseSuccess, ResponsePagination } from 'src/interface/respone';
 import { User } from '../auth/auth.entity';
 @Injectable()
@@ -177,5 +177,30 @@ export class KategoriService extends BaseResponse {
         return this._success("Sukses", user)
     }
 
-    async getBulk ()
+    async getBulk (payload: buatArrayDto) : Promise<ResponseSuccess> {
+        try {
+let berhasil = 0;
+let gagal = 0;
+
+await Promise.all(
+    payload.data.map(async (data) => {
+        try {
+await this.kategoriRepository.save({
+    ...data
+});
+
+berhasil = berhasil + 1
+        }
+        catch {
+gagal = gagal + 1
+        }
+    })
+)
+
+return this._success(`Berhasil Menyimpan Data Sebanyak ${berhasil} Kali Dan Gagal Sebanyak ${gagal} Kali`, this.req.user.user_id)
+        }
+        catch {
+            throw new HttpException("Terjadi Kesalahan", HttpStatus.BAD_REQUEST)
+        }
+    }
 }

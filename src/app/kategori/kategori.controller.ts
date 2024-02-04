@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { KategoriService } from './kategori.service';
-import { CreateKategoriDto, FindAllKategori, UpdateKategoriDto } from './kategori.dto';
+import { CreateKategoriDto, FindAllKategori, UpdateKategoriDto, buatArrayDto } from './kategori.dto';
 import { Pagination } from 'src/utils/decorator/pagination.decorator';
 import { InjectCreatedBy } from 'src/utils/decorator/inject-created_by.decorator';
 import { JwtGuard } from '../auth/auth.guard';
 import { InjectUpdatedBy } from 'src/utils/decorator/inject-updated_by.decorator';
+import { InjectBulkCreatedBy } from 'src/utils/decorator/inject-bulk-created_by';
 @UseGuards(JwtGuard)
 @Controller('kategori')
 export class KategoriController {
@@ -40,6 +41,11 @@ return this.KategoriService.Update(Number(id), payload)
     @Get('user/list')
     async getUserCategory () {
       return this.KategoriService.getUserCategory();
+    }
+
+    @Post('/create/bulk')
+    bulkCreate(@InjectBulkCreatedBy() payload: buatArrayDto) {
+      return this.KategoriService.getBulk(payload)
     }
     
 }

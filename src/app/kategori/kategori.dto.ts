@@ -1,6 +1,7 @@
 import { OmitType } from "@nestjs/mapped-types";
-import { IsInt, IsOptional, IsString, IsObject } from "class-validator";
+import { IsInt, IsOptional, IsString, IsObject, IsArray, ValidateNested, } from "class-validator";
 import { PageRequestDto } from "src/utils/dto/page.dto";
+import { Type } from "class-transformer";
 
 export class KategoriDto {
     @IsInt()
@@ -33,4 +34,10 @@ export class FindAllKategori extends PageRequestDto {
     
 }
 
-exp
+export class buatArrayDto {
+    @IsArray()
+    @ValidateNested()
+    @Type(() => CreateKategoriDto)
+    data: CreateKategoriDto[]
+
+}
